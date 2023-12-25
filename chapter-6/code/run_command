@@ -1,0 +1,23 @@
+export PROJECT_ID=wired-apex-392509
+export REGION=us-central1
+export BUCKET_NAME=wired-apex-392509-data-bucket
+
+python3 beam_helloworld.py \
+  --project=$PROJECT_ID \
+  --region=$REGION \
+  --runner=DirectRunner \
+  --temp_location=gs://$BUCKET_NAME/chapter-6/dataflow/temp  
+
+
+python3 beam_stream_bikesharing.py \
+  --project=$PROJECT_ID \
+  --region=$REGION \
+  --runner=DirectRunner \
+  --temp_location=gs://$BUCKET_NAME/chapter-6/dataflow/temp  
+
+
+python3 beam_stream_aggr.py \
+  --project=$PROJECT_ID \
+  --region=$REGION \
+  --runner=DirectRunner \
+  --temp_location=gs://$BUCKET_NAME/chapter-6/dataflow/temp  
