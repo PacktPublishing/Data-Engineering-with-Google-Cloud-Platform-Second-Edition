@@ -1,0 +1,58 @@
+/* 
+# Copyright 2023 Google, LLC.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License. 
+*/
+
+config {
+  type: "table",
+  schema: "stackoverflow_transformed",
+  bigquery: {
+    partitionBy: "date(creation_date)",
+    labels: {
+      data_owner: "toni",
+      business_owner: "operation_team"
+    }
+  },
+  description: "Combine all events into a single event table",
+  columns: {
+    event_id: "Unique event id",
+    creation_date: "Event timestamp",
+    event_type: "Description of the third column",
+    user_id: "User's id",
+    text: "The event's full free form text",
+  },
+
+  assertions: {
+    uniqueKey: ["event_id"]
+  }
+
+}
+
+SELECT 
+CONCAT("c_",id) as event_id,
+creation_date,
+"comment" as event_type,
+user_id,
+text
+FROM ${ref("stg_comments")}
+
+UNION ALL
+
+SELECT 
+CONCAT("p_",id) as event_id,
+creation_date,
+"post" as event_type,
+user_id,
+text
+FROM ${ref("stg_post_history")}
