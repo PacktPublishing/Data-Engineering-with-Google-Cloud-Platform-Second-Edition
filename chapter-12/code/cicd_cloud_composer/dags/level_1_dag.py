@@ -1,5 +1,5 @@
 from airflow import DAG
-from airflow.operators.bash import BashOperator
+from airflow.operators.bash_operator import BashOperator
 from airflow.utils.dates import days_ago
 
 args = {
@@ -9,7 +9,7 @@ args = {
 with DAG(
     dag_id='hello_world_airflow',
     default_args=args,
-    schedule='0 5 * * *',
+    schedule_interval='0 5 * * *',
     start_date=days_ago(1),
 ) as dag:
 
@@ -18,7 +18,7 @@ with DAG(
         bash_command='echo Hello',
     )
 
-    print_world = BashOperator(
+    print_world= BashOperator(
         task_id='print_world',
         bash_command='echo World',
     )

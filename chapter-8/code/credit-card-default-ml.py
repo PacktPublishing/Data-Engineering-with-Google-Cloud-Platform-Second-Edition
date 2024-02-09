@@ -8,7 +8,7 @@ import json
 import pandas as pd
 
 # TODO : Change to your project id
-project_id = "packt-data-eng-on-gcp"
+project_id = "YOUR-PROJECT-ID"
 dataset_table_id = "ml_dataset.credit_card_default"
 target_column = "default_payment_next_month"
 model_name = "cc_default_rf_model.sav"

@@ -2,7 +2,7 @@ from google.cloud import vision
 from google.cloud import translate_v2 as translate
 
 # TODO: Change to your gcs bucket
-GCS_BUCKET = "wired-apex-392509-data-bucket"
+GCS_BUCKET = "YOUR-PROJECT-ID-data-bucket"
 GCS_URI = "gs://{}/chapter-8/chapter-8-example-text.jpg".format(GCS_BUCKET)
 
 def detect_text(GCS_URI : str):

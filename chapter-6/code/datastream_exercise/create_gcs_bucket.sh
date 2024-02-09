@@ -1,0 +1,1 @@
+gcloud storage buckets create gs://$PROJECT_NAME-datastream-output
