@@ -1,2 +1,0 @@
-werkzeug==0.14.1
-apache-airflow[gcp]==1.10.3
