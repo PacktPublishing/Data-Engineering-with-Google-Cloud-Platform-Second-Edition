@@ -4,8 +4,8 @@ from kfp.dsl import component
 from google.cloud import aiplatform
 
 # TODO: Change with your project id and gcs bucket name
-project_id = "valid-climber-398413"
-gcs_bucket = "valid-climber-398413-vertex-ai-pipeline"
+project_id = "YOUR-PROJECT-ID"
+gcs_bucket = "YOUR-PROJECT-ID-vertex-ai-pipeline"
 region = "us-central1"
 pipeline_name = "ai-pipeline-credit-default-train"
 pipeline_root_path = f"gs://{gcs_bucket}/{pipeline_name}"
@@ -19,7 +19,7 @@ def load_data_from_bigquery(bigquery_table_id: str, output_gcs_bucket: str) -> s
     from google.cloud import bigquery
     from google.cloud import storage
 
-    project_id = "valid-climber-398413"
+    project_id = "YOUR-PROJECT-ID"
     output_file = "ai-pipeline-credit-default-train/artefacts/train.csv"
 
     bq_client = bigquery.Client(project=project_id)

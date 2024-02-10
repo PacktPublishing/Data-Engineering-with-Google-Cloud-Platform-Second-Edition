@@ -4,8 +4,8 @@ from kfp.dsl import component
 from google.cloud import aiplatform
 
 # TODO: Change with your project id and gcs bucket name
-project_id = "valid-climber-398413"
-gcs_bucket = "valid-climber-398413-vertex-ai-pipeline"
+project_id = "YOUR-PROJECT-ID"
+gcs_bucket = "YOUR-PROJECT-ID-vertex-ai-pipeline"
 region = "us-central1"
 pipeline_name = "practice-vertex-ai-pipeline"
 pipeline_root_path = f"gs://{gcs_bucket}/{pipeline_name}"
