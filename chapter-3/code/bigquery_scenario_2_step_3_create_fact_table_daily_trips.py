@@ -1,3 +1,17 @@
+# Copyright 2023 Google LLC
+
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+
+#     https://www.apache.org/licenses/LICENSE-2.0
+
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 import sys
 from google.cloud import bigquery
 
@@ -5,14 +19,15 @@ from google.cloud import bigquery
 PROJECT_ID = "YOUR GCP PROJECT ID"
 TARGET_TABLE_ID = "{}.dwh_bikesharing.fact_trips_daily".format(PROJECT_ID)
 
+
 def create_fact_table(PROJECT_ID, TARGET_TABLE_ID):
-    load_date = sys.argv[1] # date format : yyyy-mm-dd
+    load_date = sys.argv[1]  # date format : yyyy-mm-dd
     print("\nLoad date:", load_date)
 
     client = bigquery.Client()
     job_config = bigquery.QueryJobConfig(
-    destination=TARGET_TABLE_ID,
-    write_disposition='WRITE_APPEND')
+        destination=TARGET_TABLE_ID,
+        write_disposition='WRITE_APPEND')
 
     sql = """SELECT DATE(start_date) as trip_date,
           start_station_id,
@@ -32,7 +47,8 @@ def create_fact_table(PROJECT_ID, TARGET_TABLE_ID):
         query_job.result()
         print("Query success")
     except Exception as exception:
-            print(exception)
+        print(exception)
+
 
 if __name__ == '__main__':
     create_fact_table(PROJECT_ID, TARGET_TABLE_ID)
