@@ -1,3 +1,17 @@
+# Copyright 2023 Google LLC
+
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+
+#     https://www.apache.org/licenses/LICENSE-2.0
+
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 from kfp.dsl import pipeline
 from kfp import compiler
 from kfp.dsl import component
@@ -14,7 +28,8 @@ bigquery_table_id = f"{project_id}.ml_dataset.credit_card_default"
 target_column = "default_payment_next_month"
 model_name = "cc_default_rf_model.joblib"
 
-@component(packages_to_install=["google-cloud-bigquery","google-cloud-storage","pandas","pyarrow","db_dtypes"])
+
+@component(packages_to_install=["google-cloud-bigquery", "google-cloud-storage", "pandas", "pyarrow", "db_dtypes"])
 def load_data_from_bigquery(bigquery_table_id: str, output_gcs_bucket: str) -> str:
     from google.cloud import bigquery
     from google.cloud import storage
@@ -28,11 +43,13 @@ def load_data_from_bigquery(bigquery_table_id: str, output_gcs_bucket: str) -> s
 
     gcs_client = storage.Client(project=project_id)
     bucket = gcs_client.get_bucket(output_gcs_bucket)
-    bucket.blob(output_file).upload_from_string(dataframe.to_csv(index=False), 'text/csv')
+    bucket.blob(output_file).upload_from_string(
+        dataframe.to_csv(index=False), 'text/csv')
 
     return output_file
 
-@component(packages_to_install=["google-cloud-storage","pandas","scikit-learn==0.21.3","fsspec","gcsfs"])
+
+@component(packages_to_install=["google-cloud-storage", "pandas", "scikit-learn==0.21.3", "fsspec", "gcsfs"])
 def train_model(gcs_bucket: str, train_file_path: str, target_column: str, n_estimators: int, model_name: str):
     from google.cloud import storage
     from sklearn.ensemble import RandomForestClassifier
@@ -43,7 +60,7 @@ def train_model(gcs_bucket: str, train_file_path: str, target_column: str, n_est
 
     dataframe = pd.read_csv(f'gs://{gcs_bucket}/{train_file_path}')
     labels = dataframe[target_column]
-    features = dataframe.drop(target_column, axis = 1)
+    features = dataframe.drop(target_column, axis=1)
     output_file = f"ai-pipeline-credit-default-train/artefacts/{model_name}"
 
     print("Features :")
@@ -52,16 +69,18 @@ def train_model(gcs_bucket: str, train_file_path: str, target_column: str, n_est
     print("Labels :")
     print(labels.head(5))
 
-    x_train, x_test, y_train, y_test = train_test_split(features, labels, test_size=0.3)
+    x_train, x_test, y_train, y_test = train_test_split(
+        features, labels, test_size=0.3)
 
-    random_forest_classifier = RandomForestClassifier(n_estimators=n_estimators)
-    random_forest_classifier.fit(x_train,y_train)
+    random_forest_classifier = RandomForestClassifier(
+        n_estimators=n_estimators)
+    random_forest_classifier.fit(x_train, y_train)
 
-    y_pred=random_forest_classifier.predict(x_test)
+    y_pred = random_forest_classifier.predict(x_test)
     print("Simulate Prediction :")
     print(y_pred[:3])
 
-    print("Accuracy:",metrics.accuracy_score(y_test, y_pred))
+    print("Accuracy:", metrics.accuracy_score(y_test, y_pred))
 
     joblib.dump(random_forest_classifier, model_name)
 
@@ -71,14 +90,18 @@ def train_model(gcs_bucket: str, train_file_path: str, target_column: str, n_est
 
     print(f"Model saved in : {output_file}")
 
+
 @pipeline(
     name=pipeline_name,
     description="An ML pipeline to train credit card default",
     pipeline_root=pipeline_root_path,
 )
 def pipeline():
-    load_data_from_bigquery_task = load_data_from_bigquery(bigquery_table_id=bigquery_table_id, output_gcs_bucket=gcs_bucket)
-    train_model(gcs_bucket=gcs_bucket, train_file_path=load_data_from_bigquery_task.output, target_column=target_column, n_estimators=100, model_name=model_name)
+    load_data_from_bigquery_task = load_data_from_bigquery(
+        bigquery_table_id=bigquery_table_id, output_gcs_bucket=gcs_bucket)
+    train_model(gcs_bucket=gcs_bucket, train_file_path=load_data_from_bigquery_task.output,
+                target_column=target_column, n_estimators=100, model_name=model_name)
+
 
 compiler.Compiler().compile(
     pipeline_func=pipeline, package_path="{pipeline_name}.json"

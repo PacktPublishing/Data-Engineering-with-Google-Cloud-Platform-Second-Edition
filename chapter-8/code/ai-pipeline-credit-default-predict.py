@@ -1,3 +1,17 @@
+# Copyright 2023 Google LLC
+
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+
+#     https://www.apache.org/licenses/LICENSE-2.0
+
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 from kfp.dsl import pipeline
 from kfp import compiler
 from kfp.dsl import component
@@ -14,7 +28,8 @@ bigquery_table_id = f"{project_id}.ml_dataset.credit_card_default"
 target_column = "default_payment_next_month"
 model_name = "cc_default_rf_model.joblib"
 
-@component(packages_to_install=["google-cloud-bigquery","google-cloud-storage","pandas","pyarrow","db_dtypes"])
+
+@component(packages_to_install=["google-cloud-bigquery", "google-cloud-storage", "pandas", "pyarrow", "db_dtypes"])
 def load_data_from_bigquery(bigquery_table_id: str, output_gcs_bucket: str) -> str:
     from google.cloud import bigquery
     from google.cloud import storage
@@ -28,11 +43,13 @@ def load_data_from_bigquery(bigquery_table_id: str, output_gcs_bucket: str) -> s
 
     gcs_client = storage.Client(project=project_id)
     bucket = gcs_client.get_bucket(output_gcs_bucket)
-    bucket.blob(output_file).upload_from_string(dataframe.to_csv(index=False), 'text/csv')
+    bucket.blob(output_file).upload_from_string(
+        dataframe.to_csv(index=False), 'text/csv')
 
     return output_file
 
-@component(packages_to_install=["google-cloud-storage","pandas","scikit-learn==0.21.3","fsspec","gcsfs"])
+
+@component(packages_to_install=["google-cloud-storage", "pandas", "scikit-learn==0.21.3", "fsspec", "gcsfs"])
 def predict_batch(gcs_bucket: str, predict_file_path: str, model_path: str, output_path: str):
     from sklearn.externals import joblib
     from google.cloud import storage
@@ -56,9 +73,11 @@ def predict_batch(gcs_bucket: str, predict_file_path: str, model_path: str, outp
     prediction = pd.DataFrame(prediction)
 
     # Store prediction to GCS
-    bucket.blob(output_path).upload_from_string(prediction.to_csv(index=False), 'text/csv')
+    bucket.blob(output_path).upload_from_string(
+        prediction.to_csv(index=False), 'text/csv')
 
     print(f"Prediction file path: {output_path}")
+
 
 @pipeline(
     name="ai-pipeline-credit-default-predict",
@@ -66,11 +85,13 @@ def predict_batch(gcs_bucket: str, predict_file_path: str, model_path: str, outp
     pipeline_root=pipeline_root_path,
 )
 def pipeline():
-    load_data_from_bigquery_task = load_data_from_bigquery(bigquery_table_id=bigquery_table_id, output_gcs_bucket=gcs_bucket)
+    load_data_from_bigquery_task = load_data_from_bigquery(
+        bigquery_table_id=bigquery_table_id, output_gcs_bucket=gcs_bucket)
     predict_batch(gcs_bucket=gcs_bucket,
-    predict_file_path=load_data_from_bigquery_task.output,
-    model_path="ai-pipeline-credit-default-train/artefacts/cc_default_rf_model.joblib",
-    output_path="ai-pipeline-credit-default-predict/artefacts/prediction.csv" )
+                  predict_file_path=load_data_from_bigquery_task.output,
+                  model_path="ai-pipeline-credit-default-train/artefacts/cc_default_rf_model.joblib",
+                  output_path="ai-pipeline-credit-default-predict/artefacts/prediction.csv")
+
 
 compiler.Compiler().compile(
     pipeline_func=pipeline, package_path="{pipeline_name}.json"
