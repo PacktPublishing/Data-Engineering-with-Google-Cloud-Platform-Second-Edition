@@ -1,0 +1,1 @@
+bq --location=US mk -d datastream_output
