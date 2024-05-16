@@ -36,7 +36,7 @@ random_forest_classifier.fit(X_train,y_train)
 **Following is what you need for this book:**
 Data analysts, IT practitioners, software engineers, or any data enthusiasts looking to have a successful data engineering career will find this book invaluable. Additionally, experienced data professionals who want to start using Google Cloud to build data platforms will get clear insights on how to navigate the path. Whether you're a beginner who wants to explore the fundamentals or a seasoned professional seeking to learn the latest data engineering concepts, this book is for you.
 
-With the following software and hardware list you can run all code files present in the book (Chapter 2-10).
+With the following software and hardware list you can run all code files present in the book (Chapter 3-12).
 ### Software and Hardware List
 | Chapter | Software required | OS required |
 | -------- | ------------------------------------ | ----------------------------------- |
