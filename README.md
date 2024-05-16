@@ -1,8 +1,8 @@
-# Data Engineering with Google Cloud Platform
+# Data Engineering with Google Cloud Platform- Second Edition
 
 <a href="https://www.packtpub.com/product/data-engineering-with-google-cloud-platform-second-edition/9781835080115"><img src="https://content.packt.com/_/image/original/B21389/cover_image_large.jpg" alt="no-image" height="256px" align="right"></a>
 
-This is the code repository for [Data Engineering with Google Cloud Platform](https://github.com/PacktPublishing/Data-Engineering-with-Google-Cloud-Platform-Second-Edition), published by Packt.
+This is the code repository for [Data Engineering with Google Cloud Platform](https://www.packtpub.com/product/data-engineering-with-google-cloud-platform-second-edition/9781835080115), published by Packt.
 
 **A guide to leveling up as a data engineer by building a scalable data platform with Google Cloud**
 
